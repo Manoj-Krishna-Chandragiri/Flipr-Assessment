@@ -65,8 +65,10 @@ body {
   color: #fff;
 }
 
-.nav-item .icon {
-  font-size: 1.25rem;
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
 }
 
 /* Main Content */
@@ -91,15 +93,39 @@ body {
 .refresh-btn {
   background: #fff;
   border: 1px solid #ddd;
-  padding: 10px 20px;
+  padding: 10px 15px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .refresh-btn:hover {
   background: #f5f5f5;
+}
+
+.refresh-icon {
+  width: 18px;
+  height: 18px;
+  stroke: #333;
+  animation: spin 0.6s linear infinite;
+  animation-play-state: paused;
+}
+
+.refresh-btn:hover .refresh-icon {
+  animation-play-state: running;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Alert Messages */

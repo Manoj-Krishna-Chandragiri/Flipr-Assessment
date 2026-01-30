@@ -32,7 +32,27 @@ function App() {
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
-    fetchAllData();
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        const [projRes, cliRes, conRes, subRes] = await Promise.all([
+          axios.get(`${API_URL}/projects`),
+          axios.get(`${API_URL}/clients`),
+          axios.get(`${API_URL}/contacts`),
+          axios.get(`${API_URL}/subscribers`)
+        ]);
+        setProjects(projRes.data.data || []);
+        setClients(cliRes.data.data || []);
+        setContacts(conRes.data.data || []);
+        setSubscribers(subRes.data.data || []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        showMessage('error', 'Failed to load data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
   const fetchAllData = async () => {
@@ -179,25 +199,43 @@ function App() {
             className={`nav-item ${activeTab === 'projects' ? 'active' : ''}`}
             onClick={() => setActiveTab('projects')}
           >
-            <span className="icon">📁</span> Projects
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            Projects
           </button>
           <button 
             className={`nav-item ${activeTab === 'clients' ? 'active' : ''}`}
             onClick={() => setActiveTab('clients')}
           >
-            <span className="icon">👥</span> Clients
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Clients
           </button>
           <button 
             className={`nav-item ${activeTab === 'contacts' ? 'active' : ''}`}
             onClick={() => setActiveTab('contacts')}
           >
-            <span className="icon">📧</span> Contact Forms
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+            Contact Forms
           </button>
           <button 
             className={`nav-item ${activeTab === 'subscribers' ? 'active' : ''}`}
             onClick={() => setActiveTab('subscribers')}
           >
-            <span className="icon">📬</span> Subscribers
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="9" cy="21" r="1"/>
+              <circle cx="20" cy="21" r="1"/>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            Subscribers
           </button>
         </nav>
       </aside>
@@ -212,8 +250,12 @@ function App() {
             {activeTab === 'contacts' && 'Contact Form Responses'}
             {activeTab === 'subscribers' && 'Newsletter Subscribers'}
           </h2>
-          <button className="refresh-btn" onClick={fetchAllData}>
-            🔄 Refresh
+          <button className="refresh-btn" onClick={fetchAllData} title="Refresh data">
+            <svg className="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="23 4 23 10 17 10"/>
+              <polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36M20.49 15a9 9 0 0 1-14.85 3.36"/>
+            </svg>
           </button>
         </header>
 
@@ -473,7 +515,13 @@ function App() {
                             <td>{contact.email}</td>
                             <td>{contact.mobile}</td>
                             <td>{contact.city}</td>
-                            <td>{new Date(contact.createdAt).toLocaleDateString()}</td>
+                            <td>{contact.submittedAt ? new Date(contact.submittedAt).toLocaleString('en-US', { 
+                              year: 'numeric', 
+                              month: 'short', 
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            }) : 'N/A'}</td>
                             <td>
                               <button 
                                 className="delete-btn"
@@ -516,7 +564,13 @@ function App() {
                           <tr key={subscriber._id}>
                             <td>{index + 1}</td>
                             <td>{subscriber.email}</td>
-                            <td>{new Date(subscriber.createdAt).toLocaleDateString()}</td>
+                            <td>{subscriber.subscribedAt ? new Date(subscriber.subscribedAt).toLocaleString('en-US', { 
+                              year: 'numeric', 
+                              month: 'short', 
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            }) : 'N/A'}</td>
                             <td>
                               <button 
                                 className="delete-btn"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './App.css';
 
@@ -7,6 +7,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 function App() {
   const [projects, setProjects] = useState([]);
   const [clients, setClients] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState({ projects: true, clients: true });
   const [formData, setFormData] = useState({
     name: '',
@@ -18,6 +19,10 @@ function App() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
+  
+  // Carousel refs
+  const projectsCarouselRef = useRef(null);
+  const clientsCarouselRef = useRef(null);
 
   useEffect(() => {
     fetchProjects();
@@ -105,6 +110,100 @@ function App() {
     }
   };
 
+  // Carousel scroll functions
+  const scrollCarousel = (ref, direction) => {
+    if (ref.current) {
+      const scrollAmount = 300;
+      ref.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Default projects data matching screenshots
+  const defaultProjects = [
+    {
+      _id: '1',
+      name: 'Project Name',
+      location: 'Location',
+      category: 'Consultation',
+      image: '/assets/images/pexels-brett-sayles-2881232.svg'
+    },
+    {
+      _id: '2',
+      name: 'Project Name',
+      location: 'Location',
+      category: 'Design',
+      image: '/assets/images/pexels-brett-sayles-2881232-1.svg'
+    },
+    {
+      _id: '3',
+      name: 'Project Name',
+      location: 'Location',
+      category: 'Marketing & Design',
+      image: '/assets/images/pexels-brett-sayles-2881232-2.svg'
+    },
+    {
+      _id: '4',
+      name: 'Project Name',
+      location: 'Location',
+      category: 'Consultation & Marketing',
+      image: '/assets/images/pexels-brett-sayles-2881232-3.svg'
+    },
+    {
+      _id: '5',
+      name: 'Project Name',
+      location: 'Location',
+      category: 'Consultation',
+      image: '/assets/images/pexels-fauxels-3182834.svg'
+    }
+  ];
+
+  // Default clients data matching screenshots
+  const defaultClients = [
+    {
+      _id: '1',
+      name: 'Rowhan Smith',
+      designation: 'CEO, Foreclosure',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
+      image: '/assets/images/Ellipse 29.svg'
+    },
+    {
+      _id: '2',
+      name: 'Shipra Kayak',
+      designation: 'Brand Designer',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
+      image: '/assets/images/Ellipse 28.svg'
+    },
+    {
+      _id: '3',
+      name: 'John Lepore',
+      designation: 'CEO, Foreclosure',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
+      image: '/assets/images/Ellipse 31.svg'
+    },
+    {
+      _id: '4',
+      name: 'Marry Freeman',
+      designation: 'Marketing Manager at Mixit',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
+      image: '/assets/images/Ellipse 33.svg'
+    },
+    {
+      _id: '5',
+      name: 'Lucy',
+      designation: 'Sales Rep at Alibaba',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
+      image: '/assets/images/Ellipse 35.svg'
+    }
+  ];
+
+  // Merge default projects with fetched projects from database
+  const displayProjects = [...defaultProjects, ...projects];
+  // Merge default clients with fetched clients from database
+  const displayClients = [...defaultClients, ...clients];
+
   return (
     <div className="app">
       {/* Header/Navigation */}
@@ -112,13 +211,12 @@ function App() {
         <div className="container header-container">
           <div className="logo">
             <img src="/assets/images/logo.svg" alt="Real Trust" className="logo-img" />
-            <span className="logo-text">Real<span className="logo-highlight">Trust</span></span>
           </div>
           
           <nav className="nav">
             <a href="#home" className="nav-link active">HOME</a>
             <a href="#services" className="nav-link">SERVICES</a>
-            <a href="#projects" className="nav-link">ABOUT/ PROJECTS</a>
+            <a href="#projects" className="nav-link">ABOUT/PROJECTS</a>
             <a href="#testimonials" className="nav-link">TESTIMONIALS</a>
             <button className="contact-btn" onClick={() => scrollToSection('contact')}>CONTACT</button>
           </nav>
@@ -126,30 +224,23 @@ function App() {
       </header>
 
       {/* Hero Section */}
-      <section id="home" className="hero">
-        <div className="hero-background">
-          <div className="hero-shapes">
-            <img src="/assets/shapes/Ellipse 1.svg" alt="" className="shape shape-1" />
-            <img src="/assets/shapes/Ellipse 7.svg" alt="" className="shape shape-2" />
-            <img src="/assets/shapes/Ellipse 8.svg" alt="" className="shape shape-3" />
-          </div>
-        </div>
+      <section id="home" className="hero" style={{
+        backgroundImage: `url('/assets/images/young-couple-examining-blueprints-with-real-estate-agent-while-buying-new-home 1.svg')`,
+        backgroundSize: 'contain',
+        backgroundPosition: 'left center',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: '#f5f5f5'
+      }}>
+        <div className="hero-overlay"></div>
         
         <div className="container hero-container">
           <div className="hero-content">
-            <div className="hero-image-section">
-              <img 
-                src="/assets/images/pexels-fauxels-3182834.svg" 
-                alt="Team consultation" 
-                className="hero-main-image"
-              />
-              <h1 className="hero-title">
-                Consultation,<br />
-                Design,<br />
-                & Marketing
-              </h1>
-            </div>
-            
+            {/* Left Side Title */}
+            <h1 className="hero-title">
+              Consultation,<br />
+              Design,<br />
+              & Marketing
+            </h1>
             {/* Contact Form Card */}
             <div className="hero-form-card" id="contact">
               <h2 className="form-title">Get a Free<br />Consultation</h2>
@@ -216,17 +307,30 @@ function App() {
               consulting design and effective marketing to get 
               the best offers on your dollar, any time, any place.
             </p>
+          </div>
+          <div className="about-intro-images">
+            {/* Decorative shapes */}
             <div className="about-shapes">
               <img src="/assets/shapes/Ellipse 17.svg" alt="" className="about-shape-1" />
               <img src="/assets/shapes/Ellipse 18.svg" alt="" className="about-shape-2" />
+              <img src="/assets/shapes/Ellipse 19.svg" alt="" className="about-shape-3" />
+              <img src="/assets/shapes/Ellipse 20.svg" alt="" className="about-shape-4" />
             </div>
-          </div>
-          <div className="about-intro-image">
-            <img 
-              src="/assets/images/young-couple-examining-blueprints-with-real-estate-agent-while-buying-new-home 1.svg" 
-              alt="Consultation"
-              className="realtor-image"
-            />
+            
+            {/* Main large image */}
+            <div className="about-image-main">
+              <img src="/assets/images/Ellipse 12.svg" alt="Real estate agent" />
+            </div>
+            
+            {/* Top right image */}
+            <div className="about-image-top">
+              <img src="/assets/images/Ellipse 11.svg" alt="Property consultation" />
+            </div>
+            
+            {/* Bottom right image */}
+            <div className="about-image-bottom">
+              <img src="/assets/images/Ellipse 13.svg" alt="Client meeting" />
+            </div>
           </div>
         </div>
       </section>
@@ -271,18 +375,21 @@ function App() {
       {/* Gallery Section */}
       <section className="gallery">
         <div className="container">
+          <div className="gallery-shapes">
+            <img src="/assets/shapes/Subtract-4.svg" alt="" className="gallery-shape-1" />
+            <img src="/assets/shapes/Subtract.svg" alt="" className="gallery-shape-2" />
+            <img src="/assets/shapes/Rectangle 54.svg" alt="" className="gallery-shape-3" />
+            <img src="/assets/shapes/Subtract-5.svg" alt="" className="gallery-shape-4" />
+          </div>
           <div className="gallery-grid">
-            <div className="gallery-item large">
+            <div className="gallery-item small left">
               <img src="/assets/images/pexels-brett-sayles-2881232.svg" alt="Property 1" />
             </div>
-            <div className="gallery-item">
-              <img src="/assets/images/pexels-brett-sayles-2881232-1.svg" alt="Property 2" />
+            <div className="gallery-item large center">
+              <img src="/assets/images/pexels-andres-ayrton-6578391.svg" alt="Property 2" />
             </div>
-            <div className="gallery-item">
-              <img src="/assets/images/pexels-brett-sayles-2881232-2.svg" alt="Property 3" />
-            </div>
-            <div className="gallery-arrow">
-              <button className="arrow-btn">→</button>
+            <div className="gallery-item small right">
+              <img src="/assets/images/pexels-fauxels-3182834.svg" alt="Property 3" />
             </div>
           </div>
         </div>
@@ -308,67 +415,49 @@ function App() {
         <div className="container">
           <h2 className="section-title centered">Our Projects</h2>
           <p className="section-subtitle">
-            We know what buyers are looking for and suggest projects that will bring 
+            We know what buyers are looking for and suggest projects that will bring<br/>
             clients top dollar for the sale of their homes.
           </p>
           
-          {loading.projects ? (
-            <div className="loading">Loading projects...</div>
-          ) : (
-            <div className="projects-grid">
-              {projects.length > 0 ? (
-                projects.map((project) => (
-                  <div key={project._id} className="project-card">
-                    <div className="project-image">
-                      <img 
-                        src={project.image.startsWith('http') ? project.image : `http://localhost:5000${project.image}`}
-                        alt={project.name}
-                      />
-                    </div>
-                    <div className="project-content">
-                      <h3 className="project-category">{project.category || 'Consultation'}</h3>
-                      <p className="project-info">{project.name}, {project.location || 'Location'}</p>
-                      <button className="read-more-btn">READ MORE</button>
-                    </div>
+          <div className="carousel-wrapper">
+            <button className="carousel-btn prev" onClick={() => scrollCarousel(projectsCarouselRef, 'left')}>
+              ‹
+            </button>
+            
+            <div className="projects-carousel" ref={projectsCarouselRef}>
+              {displayProjects.map((project, index) => (
+                <div key={project._id || index} className="project-card">
+                  <div className="project-image">
+                    <img 
+                      src={
+                        project.image?.startsWith('http') 
+                          ? project.image 
+                          : project.image?.startsWith('/uploads') 
+                            ? `http://localhost:5000${project.image}`
+                            : project.image?.startsWith('/assets') || project.image?.startsWith('/') 
+                              ? project.image 
+                              : `http://localhost:5000${project.image}`
+                      }
+                      alt={project.name}
+                      onError={(e) => {
+                        console.error('Image load error for:', project.name, project.image);
+                        e.target.src = '/assets/images/pexels-brett-sayles-2881232.svg'; // Fallback image
+                      }}
+                    />
                   </div>
-                ))
-              ) : (
-                // Default sample projects when no data
-                <>
-                  <div className="project-card">
-                    <div className="project-image">
-                      <img src="/assets/images/pexels-andres-ayrton-6578391.svg" alt="Consultation" />
-                    </div>
-                    <div className="project-content">
-                      <h3 className="project-category">Consultation</h3>
-                      <p className="project-info">Project Name, Location</p>
-                      <button className="read-more-btn">READ MORE</button>
-                    </div>
+                  <div className="project-content">
+                    <h3 className="project-category">{project.category || 'Consultation'}</h3>
+                    <p className="project-info">{project.name}, {project.location || 'Location'}</p>
+                    <button className="read-more-btn">READ MORE</button>
                   </div>
-                  <div className="project-card">
-                    <div className="project-image">
-                      <img src="/assets/images/pexels-brett-sayles-2881232-3.svg" alt="Design" />
-                    </div>
-                    <div className="project-content">
-                      <h3 className="project-category">Design</h3>
-                      <p className="project-info">Project Name, Location</p>
-                      <button className="read-more-btn">READ MORE</button>
-                    </div>
-                  </div>
-                  <div className="project-card">
-                    <div className="project-image">
-                      <img src="/assets/images/Rectangle.svg" alt="Marketing & Design" />
-                    </div>
-                    <div className="project-content">
-                      <h3 className="project-category">Marketing & Design</h3>
-                      <p className="project-info">Project Name, Location</p>
-                      <button className="read-more-btn">READ MORE</button>
-                    </div>
-                  </div>
-                </>
-              )}
+                </div>
+              ))}
             </div>
-          )}
+            
+            <button className="carousel-btn next" onClick={() => scrollCarousel(projectsCarouselRef, 'right')}>
+              ›
+            </button>
+          </div>
         </div>
       </section>
 
@@ -381,91 +470,54 @@ function App() {
             <img src="/assets/shapes/Ellipse 25.svg" alt="" className="testimonial-shape-2" />
           </div>
           
-          {loading.clients ? (
-            <div className="loading">Loading testimonials...</div>
-          ) : (
-            <div className="testimonials-grid">
-              {clients.length > 0 ? (
-                clients.map((client) => (
-                  <div key={client._id} className="testimonial-card">
-                    <div className="testimonial-avatar">
-                      <img 
-                        src={client.image.startsWith('http') ? client.image : `http://localhost:5000${client.image}`}
-                        alt={client.name}
-                      />
-                    </div>
-                    <p className="testimonial-text">{client.description}</p>
-                    <h4 className="testimonial-name">{client.name}</h4>
-                    <p className="testimonial-designation">{client.designation}</p>
+          <div className="carousel-wrapper">
+            <button className="carousel-btn prev dark" onClick={() => scrollCarousel(clientsCarouselRef, 'left')}>
+              ‹
+            </button>
+            
+            <div className="testimonials-carousel" ref={clientsCarouselRef}>
+              {displayClients.map((client, index) => (
+                <div key={client._id || index} className="testimonial-card">
+                  <div className="testimonial-avatar">
+                    <img 
+                      src={
+                        client.image?.startsWith('http') 
+                          ? client.image 
+                          : client.image?.startsWith('/uploads') 
+                            ? `http://localhost:5000${client.image}`
+                            : client.image?.startsWith('/assets') || client.image?.startsWith('/') 
+                              ? client.image 
+                              : `http://localhost:5000${client.image}`
+                      }
+                      alt={client.name}
+                      onError={(e) => {
+                        console.error('Image load error for:', client.name, client.image);
+                        e.target.src = '/assets/images/Ellipse 11.svg'; // Fallback image
+                      }}
+                    />
                   </div>
-                ))
-              ) : (
-                // Default sample testimonials
-                <>
-                  <div className="testimonial-card">
-                    <div className="testimonial-avatar">
-                      <img src="/assets/images/Ellipse 11.svg" alt="Rowhan Smith" />
-                    </div>
-                    <p className="testimonial-text">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-                      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
-                    </p>
-                    <h4 className="testimonial-name">Rowhan Smith</h4>
-                    <p className="testimonial-designation">CEO, Foreclosure</p>
-                  </div>
-                  <div className="testimonial-card">
-                    <div className="testimonial-avatar">
-                      <img src="/assets/images/Ellipse 12.svg" alt="Shipra Kayak" />
-                    </div>
-                    <p className="testimonial-text">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-                      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
-                    </p>
-                    <h4 className="testimonial-name">Shipra Kayak</h4>
-                    <p className="testimonial-designation">Brand Designer</p>
-                  </div>
-                  <div className="testimonial-card">
-                    <div className="testimonial-avatar">
-                      <img src="/assets/images/Ellipse 13.svg" alt="John Lepore" />
-                    </div>
-                    <p className="testimonial-text">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-                      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
-                    </p>
-                    <h4 className="testimonial-name">John Lepore</h4>
-                    <p className="testimonial-designation">CEO, Foreclosure</p>
-                  </div>
-                  <div className="testimonial-card">
-                    <div className="testimonial-avatar">
-                      <img src="/assets/images/Ellipse 28.svg" alt="Marry Freeman" />
-                    </div>
-                    <p className="testimonial-text">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-                      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
-                    </p>
-                    <h4 className="testimonial-name">Marry Freeman</h4>
-                    <p className="testimonial-designation">Marketing Manager at Mixit</p>
-                  </div>
-                  <div className="testimonial-card">
-                    <div className="testimonial-avatar">
-                      <img src="/assets/images/Ellipse 29.svg" alt="Lucy" />
-                    </div>
-                    <p className="testimonial-text">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-                      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
-                    </p>
-                    <h4 className="testimonial-name">Lucy</h4>
-                    <p className="testimonial-designation">Sales Rep at Alibaba</p>
-                  </div>
-                </>
-              )}
+                  <p className="testimonial-text">{client.description}</p>
+                  <h4 className="testimonial-name">{client.name}</h4>
+                  <p className="testimonial-designation">{client.designation}</p>
+                </div>
+              ))}
             </div>
-          )}
+            
+            <button className="carousel-btn next dark" onClick={() => scrollCarousel(clientsCarouselRef, 'right')}>
+              ›
+            </button>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
+      <section className="cta-section" style={{
+        backgroundImage: `url('/assets/images/Rectangle.svg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}>
         <div className="container">
           <p className="cta-text">
             Learn more about our listing process, as well as our<br />
@@ -508,34 +560,37 @@ function App() {
         
         <div className="footer-bottom">
           <div className="container footer-bottom-container">
-            <p className="copyright">All Rights Reserved 2024</p>
+            <p className="copyright">All Rights Reserved 2026</p>
             <div className="footer-logo">
               <img src="/assets/images/logo.svg" alt="Real Trust" />
-              <span>Real<span className="logo-highlight">Trust</span></span>
             </div>
             <div className="social-links">
-              <a href="#" aria-label="Twitter">
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a href="#!" aria-label="Twitter">
                 <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                   <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
                 </svg>
               </a>
-              <a href="#" aria-label="Facebook">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-                </svg>
-              </a>
-              <a href="#" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                  <rect x="2" y="9" width="4" height="12"/>
-                  <circle cx="4" cy="4" r="2"/>
-                </svg>
-              </a>
-              <a href="#" aria-label="Instagram">
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a href="#!" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" strokeWidth="2"/>
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="none" stroke="currentColor" strokeWidth="2"/>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+              </a>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a href="#!" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+              </a>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a href="https://www.linkedin.com/in/manoj-krishna-chandragiri" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                  <rect x="2" y="9" width="4" height="12"/>
+                  <circle cx="4" cy="4" r="2"/>
                 </svg>
               </a>
             </div>

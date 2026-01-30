@@ -5,33 +5,81 @@ A complete full-stack web application with a lead generation landing page and an
 ## ✨ Features
 
 ### **Landing Page**
-- **Hero Section**: Eye-catching design with contact form for lead generation
-- **About Section**: Company introduction and value proposition
-- **Services Section**: Why Choose Us - ROI, Design, Marketing
-- **Our Projects Section**: Displays projects fetched from backend
-  - Project's Image (cropped to 450x350)
-  - Project's Name
-  - Project's Description  
-  - Read More button
-- **Happy Clients Section**: Client testimonials from backend
-  - Client's Image
-  - Client's Description
-  - Client's Name
-  - Client's Designation
-- **Contact Form**: Collects Full Name, Email, Mobile Number, City
-- **Newsletter Subscription**: Email subscription system
+- **Header/Navigation**: Responsive navbar with smooth scroll navigation and SVG icons
+- **Hero Section**: Eye-catching design with background image, contact form for lead generation, and form validation
+- **Not Your Average Realtor Section**: Company value proposition with 3-image circular collage and decorative shapes
+- **Why Choose Us Section**: 
+  - 3 service cards (Potential ROI, Design, Marketing)
+  - Titles styled in blue (#2196F3)
+  - Icons with descriptions
+  - Decorative background shapes
+- **Gallery Section**: 
+  - 3-column layout with L-shaped colored borders
+  - First image: Small, top-left (orange border)
+  - Middle image: Larger, centered (blue border)
+  - Third image: Small, top-right (orange border)
+  - Slight rotation animations (-2°, 1°, -1°)
+  - Decorative shapes
+- **About Us Section**: Company information with CTA button
+- **Our Projects Carousel**: 
+  - Dynamically merged default + admin-added projects
+  - Project images with error fallback
+  - Category, name, and location display
+  - Carousel navigation with prev/next buttons
+- **Happy Clients Carousel**:
+  - Dynamically merged default + admin-added testimonials
+  - Client avatars with improved image handling
+  - Testimonial text, name, and designation
+  - Auto-scroll carousel with pause on hover
+  - Proper date-based image URL resolution
+- **CTA Section**: 
+  - Background image with dark overlay
+  - Large text (1.8rem)
+  - White button styling
+- **Newsletter Subscription**:
+  - Blue background input (#2196F3)
+  - White border (2px)
+  - Subscribe button with success feedback
+- **Footer**:
+  - Navigation links
+  - Newsletter signup
+  - Social media links with white circular backgrounds
+  - Copyright information
 
 ### **Admin Panel**
-- **Project Management**: Add/delete projects with image uploads
-- **Client Management**: Add/delete client testimonials with photos
-- **Contact Form Details**: View all contact form submissions
-- **Subscriber Management**: View all newsletter subscribers
+- **Project Management**: 
+  - Add new projects with image, name, category, location, description
+  - View all projects (count displayed)
+  - Delete projects with confirmation
+  - Uploaded projects merge with defaults on frontend
+- **Client Management**: 
+  - Add new client testimonials with image, name, designation, description
+  - View all clients (count displayed)
+  - Delete clients with confirmation
+  - New clients merge with defaults on frontend (no data loss)
+- **Contact Form Responses**:
+  - View all form submissions
+  - Display: Name, Email, Mobile, City
+  - Proper date formatting (submittedAt field) with time
+  - Delete functionality with confirmation
+- **Newsletter Subscribers**:
+  - View all newsletter subscribers
+  - Display: Index, Email, Subscription Date
+  - Proper date formatting (subscribedAt field) with time
+  - Delete functionality with confirmation
+- **SVG Icons**: Professional folder, users, envelope, mailbox, and refresh icons in sidebar
+- **Responsive Design**: Works on desktop and tablet
 
 ### **Backend API**
-- RESTful API built with Node.js & Express
-- MongoDB database with Mongoose ODM
-- Image upload & processing with Sharp.js (450x350 cropping)
-- CORS-enabled for cross-origin requests
+- **RESTful Architecture**: Built with Node.js & Express
+- **Database**: MongoDB Atlas (Cloud) with Mongoose ODM
+- **File Upload**: Multer middleware for image uploads to `/uploads` directory
+- **Image Processing**: Sharp.js for cropping (450x350 for projects, 400x400 for clients)
+- **CORS**: Enabled for cross-origin requests from frontend and admin panel
+- **Date Fields**: Proper date tracking (submittedAt, subscribedAt, createdAt)
+- **Static Files**: Serves uploaded images via `/uploads` route
+- **Error Handling**: Comprehensive error messages and validation
+- **CRUD Operations**: Complete Create, Read, Update, Delete for all entities
 
 ## 🛠️ Tech Stack
 
@@ -153,19 +201,89 @@ The application is fully responsive and works on:
 - Tablet (768px - 1024px)
 - Mobile (< 768px)
 
-## 🎯 Features Implemented
+## 🎯 Recent Updates & Improvements
+
+### **UI/UX Enhancements**
+- ✅ **Admin Panel Navigation**: Replaced emojis with professional SVG icons (folder, users, envelope, mailbox, refresh)
+- ✅ **Gallery Section**: Complete redesign with 3-column card layout
+  - White card backgrounds with padding
+  - L-shaped colored borders (orange #F97316 and blue #2196F3)
+  - Slight rotation transforms (-2°, 1°, -1°)
+  - Enhanced shadows for depth
+  - Gradient background (light blue to white)
+- ✅ **Services Section**: Updated card titles to blue color (#2196F3)
+- ✅ **About-Intro Section**: Redesigned with 3-image circular collage
+  - Main center image: 300x300px
+  - Top-right overlay: 180x180px
+  - Bottom-right overlay: 180x180px
+  - White borders, shadows, proper z-index layering
+  - 4 decorative shape elements
+- ✅ **Footer Newsletter**: Blue background (#2196F3) input with white border
+- ✅ **Social Media Icons**: White circular backgrounds (40x40px) with blue icons
+- ✅ **Happy Clients Section**: 
+  - White background instead of dark
+  - Auto-scroll carousel with pause on hover
+  - Cards with shadows and borders for visibility
+  - Images centered, text left-aligned
+- ✅ **Projects Carousel**: Reordered images to specific sequence
+
+### **Bug Fixes & Data Management**
+- ✅ **Date Display**: Fixed date formatting in admin panel
+  - Contacts: Using `submittedAt` field with proper `toLocaleString()` formatting
+  - Subscribers: Using `subscribedAt` field with proper `toLocaleString()` formatting
+  - Shows both date and time (e.g., "Jan 30, 2026, 02:45 PM")
+- ✅ **Client Testimonials**: Fixed to merge default + admin-added clients
+  - Previous behavior: Only showing newly added client (data loss)
+  - Current behavior: Default 5 clients + any new clients added via admin
+  - Improved image handling with `/uploads` path resolution and error fallback
+- ✅ **Projects Carousel**: Fixed to merge default + admin-added projects
+  - Previous behavior: Only showing newly added project (data loss)
+  - Current behavior: Default 5 projects + any new projects added via admin
+  - Improved image handling with error fallback to default image
+- ✅ **Image URL Resolution**: Enhanced logic for handling both local assets and uploaded images
+  - Detects `/uploads` paths and constructs full backend URL
+  - Detects `/assets` paths and uses direct reference
+  - HTTP URLs passed through unchanged
+  - Error handler with fallback to default image
+
+### **Code Quality**
+- ✅ Consistent code structure across frontend and admin panel
+- ✅ Proper error handling in image loading
+- ✅ Database field consistency (date fields properly named)
+- ✅ Component key handling for list renders
+
+### **Testing Completed**
+- ✅ All servers running (frontend 3000, admin 3001, backend 5000)
+- ✅ Image uploads working properly
+- ✅ Date display correct in admin panel
+- ✅ Carousel navigation functional
+- ✅ Form submissions working
+- ✅ Data persistence across page reloads
+
+## 🎯 Features Implemented (Complete List)
 
 - [x] Landing Page with all sections
-- [x] Our Projects Section (from backend)
-- [x] Happy Clients Section (from backend)
-- [x] Contact Form (submits to backend)
-- [x] Newsletter Subscription
+- [x] Hero section with contact form
+- [x] About-Intro with 3-image collage and decorative shapes
+- [x] Why Choose Us section with blue titles and icons
+- [x] Gallery section with card layout and colored borders
+- [x] Our Projects Carousel (default + admin-added, merged)
+- [x] Happy Clients Carousel (default + admin-added, merged)
+- [x] Contact Form with validation
+- [x] Newsletter Subscription with blue styling
+- [x] Footer with social links (white circular backgrounds)
 - [x] Admin Panel - Project Management
 - [x] Admin Panel - Client Management
-- [x] Admin Panel - Contact Form Responses
-- [x] Admin Panel - Subscriber List
-- [x] Image Cropping (450x350)
-- [x] Responsive Design
+- [x] Admin Panel - Contact Form Responses (proper date display)
+- [x] Admin Panel - Subscriber List (proper date display)
+- [x] Admin Panel - SVG icon navigation
+- [x] Image Upload & Cropping (450x350, 400x400)
+- [x] Image Error Fallback
+- [x] Responsive Design (Desktop, Tablet, Mobile)
+- [x] Carousel with smooth scrolling
+- [x] Auto-scroll testimonials carousel
+- [x] Data Merging (default + user-added content)
+- [x] Proper Date Formatting
 
 ## 📄 License
 

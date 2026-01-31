@@ -431,13 +431,22 @@ function App() {
                   <div className="project-image">
                     <img 
                       src={
-                        project.image?.startsWith('http') 
-                          ? project.image 
-                          : project.image?.startsWith('/uploads') 
-                            ? `${BACKEND_URL}${project.image}`
-                            : project.image?.startsWith('/assets') || project.image?.startsWith('/') 
-                              ? project.image 
-                              : `${BACKEND_URL}${project.image}`
+                        (() => {
+                          let imageUrl = project.image;
+                          if (imageUrl?.startsWith('http')) {
+                            return imageUrl;
+                          } else if (imageUrl?.startsWith('/uploads')) {
+                            const fullUrl = `${BACKEND_URL}${imageUrl}`;
+                            console.log('Project image URL:', { original: imageUrl, full: fullUrl, BACKEND_URL });
+                            return fullUrl;
+                          } else if (imageUrl?.startsWith('/assets') || imageUrl?.startsWith('/')) {
+                            return imageUrl;
+                          } else {
+                            const fullUrl = `${BACKEND_URL}${imageUrl}`;
+                            console.log('Project image URL (fallback):', { original: imageUrl, full: fullUrl, BACKEND_URL });
+                            return fullUrl;
+                          }
+                        })()
                       }
                       alt={project.name}
                       onError={(e) => {
@@ -482,13 +491,22 @@ function App() {
                   <div className="testimonial-avatar">
                     <img 
                       src={
-                        client.image?.startsWith('http') 
-                          ? client.image 
-                          : client.image?.startsWith('/uploads') 
-                            ? `${BACKEND_URL}${client.image}`
-                            : client.image?.startsWith('/assets') || client.image?.startsWith('/') 
-                              ? client.image 
-                              : `${BACKEND_URL}${client.image}`
+                        (() => {
+                          let imageUrl = client.image;
+                          if (imageUrl?.startsWith('http')) {
+                            return imageUrl;
+                          } else if (imageUrl?.startsWith('/uploads')) {
+                            const fullUrl = `${BACKEND_URL}${imageUrl}`;
+                            console.log('Client image URL:', { original: imageUrl, full: fullUrl, BACKEND_URL });
+                            return fullUrl;
+                          } else if (imageUrl?.startsWith('/assets') || imageUrl?.startsWith('/')) {
+                            return imageUrl;
+                          } else {
+                            const fullUrl = `${BACKEND_URL}${imageUrl}`;
+                            console.log('Client image URL (fallback):', { original: imageUrl, full: fullUrl, BACKEND_URL });
+                            return fullUrl;
+                          }
+                        })()
                       }
                       alt={client.name}
                       onError={(e) => {

@@ -28,7 +28,12 @@ const clientsDir = path.join(uploadsDir, 'clients');
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://your-frontend-domain.vercel.app'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://flipr-assessment.netlify.app',
+    'https://flipr-admin-panel.netlify.app'
+  ],
   credentials: true
 }));
 

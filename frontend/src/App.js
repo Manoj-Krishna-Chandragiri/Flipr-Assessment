@@ -3,6 +3,7 @@ import axios from 'axios';
 import './App.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
 
 function App() {
   const [projects, setProjects] = useState([]);
@@ -433,10 +434,10 @@ function App() {
                         project.image?.startsWith('http') 
                           ? project.image 
                           : project.image?.startsWith('/uploads') 
-                            ? `http://localhost:5000${project.image}`
+                            ? `${BACKEND_URL}${project.image}`
                             : project.image?.startsWith('/assets') || project.image?.startsWith('/') 
                               ? project.image 
-                              : `http://localhost:5000${project.image}`
+                              : `${BACKEND_URL}${project.image}`
                       }
                       alt={project.name}
                       onError={(e) => {
@@ -484,10 +485,10 @@ function App() {
                         client.image?.startsWith('http') 
                           ? client.image 
                           : client.image?.startsWith('/uploads') 
-                            ? `http://localhost:5000${client.image}`
+                            ? `${BACKEND_URL}${client.image}`
                             : client.image?.startsWith('/assets') || client.image?.startsWith('/') 
                               ? client.image 
-                              : `http://localhost:5000${client.image}`
+                              : `${BACKEND_URL}${client.image}`
                       }
                       alt={client.name}
                       onError={(e) => {
